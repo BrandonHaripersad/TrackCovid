@@ -2,16 +2,19 @@ package com.example.trackcovid;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.trackcovid.common.Country;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +22,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Change Location Button
+        final Button changeLocationButton = findViewById(R.id.change_location_button);
+        changeLocationButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent changeLocationIntent = new Intent(MainActivity.this, LocationMenuActivity.class);
+                startActivity(changeLocationIntent);
+            }
+        });
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("country").child("United States");
         reference.addValueEventListener(new ValueEventListener() {
