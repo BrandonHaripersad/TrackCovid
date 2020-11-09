@@ -1,4 +1,4 @@
-package com.example.trackcovid;
+package com.example.trackcovid.common;
 
 public class User {
 
