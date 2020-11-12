@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -65,22 +64,28 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/todays_cases"
+            android:textSize="18sp"
         />
         <TextView
             android:id="@+id/counter_todays_cases"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/change_since_yesterday"
+            android:textSize="18sp"
             />
         <TextView
             android:id="@+id/counter_changes_since_yesterday"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="18sp"
             />
     </LinearLayout>
 
@@ -99,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/empty_location"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:gravity="center"
             />
         <Space
