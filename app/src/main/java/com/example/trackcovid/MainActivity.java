@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.trackcovid.common.Country;
 import com.google.firebase.database.DataSnapshot;
@@ -22,6 +23,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Refresh API Data Button
+        final Button refreshDataButton = findViewById(R.id.button_refresh_api_data);
+        refreshDataButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                Toast.makeText(getApplicationContext(),"TODO",Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //Change Location Button
         final Button changeLocationButton = findViewById(R.id.change_location_button);

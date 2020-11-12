@@ -11,6 +11,9 @@
     <string name="province">Province</string>
     <string name="back">Back</string>
     <string name="ok">OK</string>
+    <string name="refresh_API_data">Refresh API Data</string>
+    <string name="todays_cases">Today\'s Cases</string>
+    <string name="change_since_yesterday">Change since yesterday</string>
     <string-array name="test_country_array">
         <item>Test</item>
         <item>Canada</item>

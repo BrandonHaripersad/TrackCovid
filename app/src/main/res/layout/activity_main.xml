@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
@@ -50,7 +51,39 @@
             android:layout_height="64dp"
             android:gravity="center|center_horizontal|center_vertical"
             android:text="@string/textview" />
+
+        <Button
+            android:id="@+id/button_refresh_api_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/refresh_API_data"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/todays_cases"
+        />
+        <TextView
+            android:id="@+id/counter_todays_cases"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/change_since_yesterday"
+            />
+        <TextView
+            android:id="@+id/counter_changes_since_yesterday"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
+
 
 
     <LinearLayout
@@ -82,5 +115,4 @@
             />
 
     </LinearLayout>
-
 </RelativeLayout>

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,6 +26,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class LocationMenuActivity extends AppCompatActivity {
 
     final String[] LOCATION_PERMS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
@@ -32,6 +38,7 @@ public class LocationMenuActivity extends AppCompatActivity {
     private static final String TAG = "LocationMenuActivity";
     SharedPreferences sp;
     SharedPreferences.Editor spEditor;
+    Geocoder geocoder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +64,8 @@ public class LocationMenuActivity extends AppCompatActivity {
                 startActivity(manualChangeLocationIntent);
             }
         });
+
+        geocoder = new Geocoder(this, Locale.getDefault());
     }
 
     private void checkForPermissions() {
@@ -84,8 +93,22 @@ public class LocationMenuActivity extends AppCompatActivity {
                     spEditor.putLong("latitude", Double.doubleToRawLongBits(latitude));
                     spEditor.putLong("longitude", Double.doubleToRawLongBits(longitude));
                     spEditor.commit();
+
                     Toast.makeText(getApplicationContext(), "Saved Latitude: " + latitude + ", and " + "Longitude: " + longitude, Toast.LENGTH_SHORT).show();
 
+                    try {
+                        List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                        String country = addresses.get(0).getCountryName();
+                        //May have province or state
+                        String adminArea = addresses.get(0).getAdminArea();
+                        spEditor.putString("country", country);
+                        spEditor.putString("adminArea", adminArea);
+                        spEditor.commit();
+
+                        Toast.makeText(getApplicationContext(), country + ", " + adminArea, Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else{
                     Log.d(TAG, "Location was null");
