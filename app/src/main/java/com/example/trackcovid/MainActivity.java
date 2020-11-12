@@ -29,9 +29,12 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     //Dictionary with date as the key, and a CaseTuple value with daily cases, deaths, recoveries
     Map<String, CaseTuple> CaseDictionary = new HashMap<>();
-    TextView dailyCasesCounter;
-    TextView changesInCasesCounter;
+    TextView dailyCasesCounter, changesInCasesCounter, locationTextView, dateTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
 
         dailyCasesCounter = findViewById(R.id.counter_todays_cases);
         changesInCasesCounter = findViewById(R.id.counter_changes_since_yesterday);
+        locationTextView = findViewById(R.id.location_textview);
+        dateTextView = findViewById(R.id.date_textview);
+        reloadLocationTextview();
 
         //Change Location Button
         final Button changeLocationButton = findViewById(R.id.change_location_button);
@@ -127,6 +132,13 @@ public class MainActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reloadLocationTextview();
+        reloadDate();
+    }
+
     private void saveTimelineData(JSONObject timelineObject) {
 
         String key;
@@ -174,6 +186,24 @@ public class MainActivity extends AppCompatActivity {
         }
         dailyCasesCounter.setText(Integer.toString(todaysCases));
         changesInCasesCounter.setText(changesCounterValue);
+    }
+
+    private void reloadLocationTextview(){
+        String country = sp.getString("country", null);
+        String adminArea = sp.getString("adminArea", null);
+        String city = sp.getString("city", null);
+        if (country == null || adminArea == null){
+            locationTextView.setText(R.string.empty_location);
+        }
+        else{
+            locationTextView.setText(city + ", " +adminArea + "\n" + country);
+        }
+    }
+
+    private void reloadDate(){
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+        String dateStr = dateFormatter.format(new Date());
+        dateTextView.setText(dateStr);
     }
 
 }

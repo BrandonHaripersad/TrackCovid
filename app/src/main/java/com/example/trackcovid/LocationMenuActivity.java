@@ -94,18 +94,20 @@ public class LocationMenuActivity extends AppCompatActivity {
                     spEditor.putLong("longitude", Double.doubleToRawLongBits(longitude));
                     spEditor.commit();
 
-                    Toast.makeText(getApplicationContext(), "Saved Latitude: " + latitude + ", and " + "Longitude: " + longitude, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Latitude: " + latitude + ", and " + "Longitude: " + longitude, Toast.LENGTH_SHORT).show();
 
                     try {
                         List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                         String country = addresses.get(0).getCountryName();
                         //May have province or state
                         String adminArea = addresses.get(0).getAdminArea();
+                        String city = addresses.get(0).getLocality();
                         spEditor.putString("country", country);
                         spEditor.putString("adminArea", adminArea);
+                        spEditor.putString("city", city);
                         spEditor.commit();
 
-                        Toast.makeText(getApplicationContext(), country + ", " + adminArea, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), city + ", " + adminArea + ", " + country, Toast.LENGTH_LONG).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
