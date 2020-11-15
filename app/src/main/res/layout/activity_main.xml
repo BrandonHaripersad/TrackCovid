@@ -14,74 +14,28 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/Country"
-            android:layout_width="match_parent"
-            android:layout_height="76dp"
-            android:gravity="center|center_horizontal|center_vertical"
-            android:text="Hello World!"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/pop"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:gravity="center"
-            android:text="@string/population"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/population"
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:gravity="center|center_horizontal|center_vertical"
-            android:text="@string/textview" />
-
-        <TextView
-            android:id="@+id/text1"
-            android:layout_width="match_parent"
-            android:layout_height="68dp"
-            android:gravity="center|center_horizontal|center_vertical"
-            android:text="Cases:"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/cases"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:gravity="center|center_horizontal|center_vertical"
-            android:text="@string/textview" />
-
-        <Button
-            android:id="@+id/button_refresh_api_data"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/refresh_API_data"
-            android:gravity="center"
-            />
-
-        <TextView
             android:id="@+id/date_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="75dp"
             android:gravity="center"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
             android:gravity="center"
             android:text="@string/todays_cases"
-            android:textSize="30sp"
-        />
+            android:textSize="30sp" />
+
         <TextView
             android:id="@+id/counter_todays_cases"
-            android:text="@string/please_refresh_data"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="74dp"
             android:gravity="center"
-            android:textSize="18sp"
-            />
+            android:text="@string/please_refresh_data"
+            android:textSize="18sp" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -89,14 +43,22 @@
             android:text="@string/change_since_yesterday"
             android:textSize="30sp"
             />
+
         <TextView
             android:id="@+id/counter_changes_since_yesterday"
-            android:text="@string/please_refresh_data"
             android:layout_width="match_parent"
+            android:layout_height="74dp"
+            android:layout_marginBottom="50dp"
+            android:gravity="center"
+            android:text="@string/please_refresh_data"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/button_refresh_api_data"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textSize="18sp"
-            />
+            android:text="@string/refresh_API_data" />
     </LinearLayout>
 
 

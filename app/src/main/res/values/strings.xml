@@ -27,4 +27,19 @@
         <item>Vancouver</item>
         <item>Nova Scotia</item>
     </string-array>
+    <string-array name="Provinces">
+        <item>British Columbia</item>
+        <item>Alberta</item>
+        <item>Saskatchewan</item>
+        <item>Manitoba</item>
+        <item>Ontario</item>
+        <item>Quebec</item>
+        <item>New Brunswick</item>
+        <item>Nova Scotia</item>
+        <item>Prince Edward Island</item>
+        <item>Newfoundland and Labrador</item>
+        <item>Yukon</item>
+        <item>Northwest Territories</item>
+        <item>Nunavut</item>
+    </string-array>
 </resources>

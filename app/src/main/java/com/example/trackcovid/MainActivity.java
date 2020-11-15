@@ -1,8 +1,5 @@
 package com.example.trackcovid;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,7 +18,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.trackcovid.common.Country;
 import com.example.trackcovid.common.CaseTuple;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,6 +35,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,14 +76,6 @@ public class MainActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Country Canada = snapshot.getValue(Country.class);
-                TextView country = findViewById(R.id.Country);
-                TextView population = findViewById(R.id.population);
-                TextView cases = findViewById(R.id.cases);
-
-                country.setText(Canada.getName().toString());
-                population.setText(Integer.toString(Canada.getPop()));
-                cases.setText(Integer.toString(Canada.getTotal_cases()));
 
             }
 
