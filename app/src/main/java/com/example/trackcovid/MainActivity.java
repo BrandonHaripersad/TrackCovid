@@ -6,11 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     //Dictionary with date as the key, and a CaseTuple value with daily cases, deaths, recoveries
     Map<String, CaseTuple> CaseDictionary = new HashMap<>();
     TextView dailyCasesCounter, changesInCasesCounter, locationTextView, dateTextView;
+    final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,44 +97,83 @@ public class MainActivity extends AppCompatActivity {
 
         //Refresh API Data Button
         final Button refreshDataButton = findViewById(R.id.button_refresh_api_data);
-        requestQueue = Volley.newRequestQueue(this);
-
         refreshDataButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                //prevent exceeding API rate limit
+                refreshDataButton.setEnabled(false);
                 requestData();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshDataButton.setEnabled(true);
+                    }
+                }, 5000);
             }
         });
     }
 
+    private boolean hasLocationDataAvailable() {
+        String country = sp.getString("country", null);
+        String adminArea = sp.getString("adminArea", null);
+
+        if (TextUtils.isEmpty(country) || TextUtils.isEmpty(adminArea)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private String buildApiUrl(String country, String adminArea) {
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme("https")
+                .authority("www.disease.sh")
+                .appendPath("v3")
+                .appendPath("covid-19")
+                .appendPath("historical")
+                .appendPath(country)
+                .appendPath(adminArea)
+                .appendQueryParameter("lastdays", "2");
+        String url = builder.build().toString();
+        return url;
+    }
+
     private void requestData() {
 
-        //TODO: CHANGE PARAMS DEPENDING ON USER LOCATION
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "https://disease.sh/v3/covid-19/historical/Canada/Ontario?lastdays=2";
+        Boolean hasLocationData = hasLocationDataAvailable();
+        //String url = "https://disease.sh/v3/covid-19/historical/Canada/Ontario?lastdays=2";
+        if (hasLocationData) {
+            String country = sp.getString("country", null);
+            String adminArea = sp.getString("adminArea", null);
+            String url = buildApiUrl(country, adminArea);
+            Toast.makeText(getApplicationContext(), "Fetching Data..", Toast.LENGTH_SHORT).show();
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
+                            try {
+                                JSONObject responseObject = new JSONObject(response);
 
-                        try {
-                            JSONObject responseObject = new JSONObject(response);
+                                JSONObject timelineObject = responseObject.getJSONObject("timeline");
+                                saveTimelineData(timelineObject);
 
-                            JSONObject timelineObject = responseObject.getJSONObject("timeline");
-                            saveTimelineData(timelineObject);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        });
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            });
 
-        queue.add(stringRequest);
+            queue.add(stringRequest);
+        } else {
+            Toast.makeText(getApplicationContext(), "Location Has Not Been Selected", Toast.LENGTH_LONG).show();
+            return;
+        }
     }
 
     @Override
@@ -137,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         reloadLocationTextview();
         reloadDate();
+        requestData();
     }
 
     private void saveTimelineData(JSONObject timelineObject) {
@@ -188,19 +233,18 @@ public class MainActivity extends AppCompatActivity {
         changesInCasesCounter.setText(changesCounterValue);
     }
 
-    private void reloadLocationTextview(){
+    private void reloadLocationTextview() {
         String country = sp.getString("country", null);
         String adminArea = sp.getString("adminArea", null);
         String city = sp.getString("city", null);
-        if (country == null || adminArea == null){
+        if (country == null || adminArea == null) {
             locationTextView.setText(R.string.empty_location);
-        }
-        else{
-            locationTextView.setText(city + ", " +adminArea + "\n" + country);
+        } else {
+            locationTextView.setText(city + ", " + adminArea + "\n" + country);
         }
     }
 
-    private void reloadDate(){
+    private void reloadDate() {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
         String dateStr = dateFormatter.format(new Date());
         dateTextView.setText(dateStr);

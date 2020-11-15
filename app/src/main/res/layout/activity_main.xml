@@ -72,10 +72,11 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/todays_cases"
-            android:textSize="18sp"
+            android:textSize="30sp"
         />
         <TextView
             android:id="@+id/counter_todays_cases"
+            android:text="@string/please_refresh_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -86,10 +87,11 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/change_since_yesterday"
-            android:textSize="18sp"
+            android:textSize="30sp"
             />
         <TextView
             android:id="@+id/counter_changes_since_yesterday"
+            android:text="@string/please_refresh_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
