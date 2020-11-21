@@ -15,7 +15,7 @@
     <string name="todays_cases">Today\'s Cases</string>
     <string name="change_since_yesterday">Change since yesterday</string>
     <string name="please_refresh_data">Please Refresh Data</string>
-    <string name="username">Username</string>
+    <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="register">Register</string>
