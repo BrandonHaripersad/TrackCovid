@@ -2,18 +2,22 @@ package com.example.trackcovid.common;
 
 public class User {
 
-    public int id;
-    public String first;
-    public String last;
+    public String email;
+    public String country;
+    public String adminArea;
 
     public User(){
         // Default constructor
     }
 
-    public User(int id, String first, String last) {
-        this.id = id;
-        this.first = first;
-        this.last = last;
+    public User(String email){
+        this.email = email;
+        this.country = null;
+        this.adminArea = null;
+    }
+
+    public User(String email, String country, String adminArea) {
+        this.email = email;
     }
 
 
