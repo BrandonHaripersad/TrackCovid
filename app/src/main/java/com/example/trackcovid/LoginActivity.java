@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginActivity extends AppCompatActivity {
@@ -54,8 +55,32 @@ public class LoginActivity extends AppCompatActivity {
         passwordField = findViewById(R.id.PasswordField);
         passwordField.setTransformationMethod(PasswordTransformationMethod.getInstance());
         progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
 
         mAuth = FirebaseAuth.getInstance();
+
+        mAuth.addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull final FirebaseAuth firebaseAuth) {
+                progressBar.setVisibility(View.GONE);
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+
+                //Waited for Firebase to initialize, then check if logged in
+                //TODO: Store user id locally, mAuth.getCurrentUser().getUid().toString() gives the user ID
+                if (user != null) {
+                    startPostLoginActivity();
+                } else {
+                    //signout
+                }
+            }
+        });
+    }
+
+    private void startPostLoginActivity(){
+        Intent successfulLoginIntent = new Intent(LoginActivity.this, MainActivity.class);
+        successfulLoginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(successfulLoginIntent);
+        finish();
     }
 
     private void registerUser() {
@@ -135,17 +160,14 @@ public class LoginActivity extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
-                        //TODO: Store user id locally, mAuth.getCurrentUser().getUid().toString() gives the user ID
+                    if (task.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getApplicationContext(), mAuth.getCurrentUser().getUid().toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "User ID: " + mAuth.getCurrentUser().getUid().toString(), Toast.LENGTH_LONG).show();
 
                         passwordField.setText("");
-                        Intent successfulLoginIntent = new Intent(LoginActivity.this, MainActivity.class);
-                        successfulLoginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(successfulLoginIntent);
-                    }
-                    else{
+
+                        //AuthStateListener will pick it up from here
+                    } else {
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(), "Please check your credentials", Toast.LENGTH_SHORT).show();
                     }

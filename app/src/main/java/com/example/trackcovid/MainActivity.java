@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAuth = FirebaseAuth.getInstance();
         sp = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         spEditor = sp.edit();
 
@@ -82,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Signed out", Toast.LENGTH_SHORT).show();
 
                 Intent signoutIntent = new Intent(MainActivity.this, LoginActivity.class);
-                signoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(signoutIntent);
             }
         });
