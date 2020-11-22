@@ -1,8 +1,6 @@
 package com.example.trackcovid;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -10,14 +8,21 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import com.example.trackcovid.common.Location;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class LocationSelectorActivity extends AppCompatActivity {
 
     Spinner countrySpinner;
     Spinner provinceSpinner;
-    SharedPreferences sp;
-    SharedPreferences.Editor spEditor;
+    private FirebaseAuth mAuth;
+    String country;
+    String adminArea;
+    //SharedPreferences sp;
+    //SharedPreferences.Editor spEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +30,19 @@ public class LocationSelectorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_location_selector);
         initializePlaceholderSpinners();
 
-        sp = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        spEditor = sp.edit();
+        //sp = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        //spEditor = sp.edit();
+        mAuth = FirebaseAuth.getInstance();
 
         //TODO: OK button for selecting location
         final Button submitButton = findViewById(R.id.location_selector_submit_button);
         submitButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user != null) {
+                    Location location = new Location(country, adminArea, 0, 0, user.getUid());
+                    MainActivity.db.locationDao().insert(location);
+                }
                 Intent BackToMain = new Intent(LocationSelectorActivity.this, MainActivity.class);
                 startActivity((BackToMain));
             }
@@ -59,8 +70,7 @@ public class LocationSelectorActivity extends AppCompatActivity {
         countrySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                spEditor.putString("country", parent.getItemAtPosition(position).toString());
-                spEditor.commit();
+                country = parent.getItemAtPosition(position).toString();
 
                 if (parent.getItemAtPosition(position).equals("Canada")) {
                     fillSpinner("Canada");
@@ -91,8 +101,7 @@ public class LocationSelectorActivity extends AppCompatActivity {
         provinceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                spEditor.putString("adminArea", parent.getItemAtPosition(position).toString());
-                spEditor.commit();
+                adminArea = parent.getItemAtPosition(position).toString();
             }
 
             @Override

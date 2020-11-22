@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -18,8 +17,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.trackcovid.common.AppDatabase;
 import com.example.trackcovid.common.CaseTuple;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,9 +40,11 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final String TAG = "Log";
+    public static AppDatabase db;
     SharedPreferences sp;
     SharedPreferences.Editor spEditor;
     RequestQueue requestQueue;
@@ -56,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "proj").allowMainThreadQueries().build();
         mAuth = FirebaseAuth.getInstance();
+
         sp = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         spEditor = sp.edit();
 
@@ -118,10 +123,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean hasLocationDataAvailable() {
-        String country = sp.getString("country", null);
-        String adminArea = sp.getString("adminArea", null);
+        FirebaseUser user = mAuth.getCurrentUser();
+        String country = null;
+        String adminArea = null;
 
-        if (TextUtils.isEmpty(country) || TextUtils.isEmpty(adminArea)) {
+        if (user != null) {
+            country = db.locationDao().getCountryName(user.getUid());
+            adminArea = db.locationDao().getAdminArea(user.getUid());
+        }
+
+        if (country == null || adminArea == null) {
             return false;
         }
 
@@ -148,8 +159,9 @@ public class MainActivity extends AppCompatActivity {
         Boolean hasLocationData = hasLocationDataAvailable();
         //String url = "https://disease.sh/v3/covid-19/historical/Canada/Ontario?lastdays=2";
         if (hasLocationData) {
-            String country = sp.getString("country", null);
-            String adminArea = sp.getString("adminArea", null);
+            FirebaseUser user = mAuth.getCurrentUser();
+            String country = db.locationDao().getCountryName(user.getUid());
+            String adminArea = db.locationDao().getAdminArea(user.getUid());
             String url = buildApiUrl(country, adminArea);
             Toast.makeText(getApplicationContext(), "Fetching Data..", Toast.LENGTH_SHORT).show();
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
@@ -239,13 +251,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadLocationTextview() {
-        String country = sp.getString("country", null);
-        String adminArea = sp.getString("adminArea", null);
-        String city = sp.getString("city", null);
+        FirebaseUser user = mAuth.getCurrentUser();
+        String country = null;
+        String adminArea = null;
+
+        if (user != null) {
+            country = db.locationDao().getCountryName(user.getUid());
+            adminArea = db.locationDao().getAdminArea(user.getUid());
+        }
+
         if (country == null || adminArea == null) {
             locationTextView.setText(R.string.empty_location);
         } else {
-            locationTextView.setText(city + ", " + adminArea + "\n" + country);
+            locationTextView.setText(adminArea + "\n" + country);
         }
     }
 

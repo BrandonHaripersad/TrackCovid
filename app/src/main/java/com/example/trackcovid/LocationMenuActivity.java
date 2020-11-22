@@ -2,33 +2,32 @@ package com.example.trackcovid;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 public class LocationMenuActivity extends AppCompatActivity {
 
@@ -36,9 +35,12 @@ public class LocationMenuActivity extends AppCompatActivity {
     static final int LOCATION_REQUEST_CODE = 5;
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final String TAG = "LocationMenuActivity";
-    SharedPreferences sp;
-    SharedPreferences.Editor spEditor;
+    private FirebaseAuth mAuth;
+    //SharedPreferences sp;
+    //SharedPreferences.Editor spEditor;
     Geocoder geocoder;
+    double longitude;
+    double latitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +49,9 @@ public class LocationMenuActivity extends AppCompatActivity {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
-        sp = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        spEditor = sp.edit();
+        //sp = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        //spEditor = sp.edit();
+        mAuth = FirebaseAuth.getInstance();
 
         final Button useGPSLocationButton = findViewById(R.id.useGPSButton);
         useGPSLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -87,27 +90,32 @@ public class LocationMenuActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Location location) {
                 if (location != null){
-                    Double latitude = location.getLatitude();
-                    Double longitude = location.getLongitude();
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
 
-                    spEditor.putLong("latitude", Double.doubleToRawLongBits(latitude));
-                    spEditor.putLong("longitude", Double.doubleToRawLongBits(longitude));
-                    spEditor.commit();
+                    //spEditor.putLong("latitude", Double.doubleToRawLongBits(latitude));
+                    //spEditor.putLong("longitude", Double.doubleToRawLongBits(longitude));
+                    //spEditor.commit();
 
                     Toast.makeText(getApplicationContext(), "Latitude: " + latitude + ", and " + "Longitude: " + longitude, Toast.LENGTH_SHORT).show();
 
                     try {
                         List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                         String country = addresses.get(0).getCountryName();
-                        //May have province or state
                         String adminArea = addresses.get(0).getAdminArea();
-                        String city = addresses.get(0).getLocality();
-                        spEditor.putString("country", country);
-                        spEditor.putString("adminArea", adminArea);
-                        spEditor.putString("city", city);
-                        spEditor.commit();
+                        //May have province or state
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            com.example.trackcovid.common.Location loc = new com.example.trackcovid.common.Location(country, adminArea, longitude, latitude, user.getUid());
+                            MainActivity.db.locationDao().insert(loc);
+                        }
+                        //String city = addresses.get(0).getLocality();
+                        //spEditor.putString("country", country);
+                        //spEditor.putString("adminArea", adminArea);
+                        //spEditor.putString("city", city);
+                        //spEditor.commit();
 
-                        Toast.makeText(getApplicationContext(), city + ", " + adminArea + ", " + country, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), adminArea + ", " + country, Toast.LENGTH_LONG).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
