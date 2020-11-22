@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.trackcovid.common.CaseTuple;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     Map<String, CaseTuple> CaseDictionary = new HashMap<>();
     TextView dailyCasesCounter, changesInCasesCounter, locationTextView, dateTextView;
     final Handler handler = new Handler();
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,19 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent changeLocationIntent = new Intent(MainActivity.this, LocationMenuActivity.class);
                 startActivity(changeLocationIntent);
+            }
+        });
+
+        final Button signOutButton = findViewById(R.id.signout_button);
+        signOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                Toast.makeText(getApplicationContext(), "Signed out", Toast.LENGTH_SHORT).show();
+
+                Intent signoutIntent = new Intent(MainActivity.this, LoginActivity.class);
+                signoutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(signoutIntent);
             }
         });
 

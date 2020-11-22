@@ -36,13 +36,13 @@
             android:gravity="center"
             android:text="@string/please_refresh_data"
             android:textSize="18sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/change_since_yesterday"
-            android:textSize="30sp"
-            />
+            android:textSize="30sp" />
 
         <TextView
             android:id="@+id/counter_changes_since_yesterday"
@@ -58,40 +58,68 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/refresh_API_data" />
+            android:text="@string/refresh_API_data"
+            android:textSize="20sp" />
     </LinearLayout>
-
-
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:layout_marginBottom="20dp"
-        >
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/location_textview"
-            android:layout_width="wrap_content"
-            android:maxWidth="240dp"
-            android:layout_height="match_parent"
-            android:text="@string/empty_location"
-            android:textSize="16sp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="20dp"
             android:gravity="center"
-            />
-        <Space
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            ></Space>
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/change_location_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/change"
-            />
+            <TextView
+                android:id="@+id/location_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:maxWidth="240dp"
+                android:text="@string/empty_location"
+                android:textSize="20sp" />
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"></Space>
+
+            <Button
+                android:id="@+id/change_location_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/change"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user"></TextView>
+
+            <Space
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"></Space>
+
+            <Button
+                android:id="@+id/signout_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/signout"></Button>
+
+        </LinearLayout>
 
     </LinearLayout>
+
 </RelativeLayout>

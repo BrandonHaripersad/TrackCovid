@@ -2,6 +2,7 @@ package com.example.trackcovid;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +36,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         loginButton = findViewById(R.id.loginButton);
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginUser();
+            }
+        });
 
         registerButton = findViewById(R.id.registerButton);
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -45,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 
         emailField = findViewById(R.id.EmailField);
         passwordField = findViewById(R.id.PasswordField);
-
+        passwordField.setTransformationMethod(PasswordTransformationMethod.getInstance());
         progressBar = findViewById(R.id.progressBar);
 
         mAuth = FirebaseAuth.getInstance();
@@ -58,31 +65,29 @@ public class LoginActivity extends AppCompatActivity {
         if (validateFields()) {
             //validated go ahead with firebase
             progressBar.setVisibility(View.VISIBLE);
-            //TODO: check if user already exists
 
             //otherwise create user
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
                         User user = new User(email);
                         FirebaseDatabase.getInstance().getReference("users")
                                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                 .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful()){
+                                if (task.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "Registration Successful", Toast.LENGTH_SHORT).show();
-                                }
-                                else{
+                                    //TODO: Create user in local here?
+                                } else {
                                     Toast.makeText(getApplicationContext(), "Registration Failed", Toast.LENGTH_SHORT).show();
                                 }
                                 progressBar.setVisibility(View.GONE);
                             }
                         });
-                    }
-                    else{
+                    } else {
                         Toast.makeText(getApplicationContext(), "Registration Failed", Toast.LENGTH_SHORT).show();
                         progressBar.setVisibility(View.GONE);
                     }
@@ -119,5 +124,36 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void loginUser() {
+        String email = emailField.getText().toString().trim();
+        String password = passwordField.getText().toString().trim();
+
+        if (validateFields()) {
+            progressBar.setVisibility(View.VISIBLE);
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        //TODO: Store user id locally, mAuth.getCurrentUser().getUid().toString() gives the user ID
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getApplicationContext(), mAuth.getCurrentUser().getUid().toString(), Toast.LENGTH_LONG).show();
+
+                        passwordField.setText("");
+                        Intent successfulLoginIntent = new Intent(LoginActivity.this, MainActivity.class);
+                        successfulLoginIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(successfulLoginIntent);
+                    }
+                    else{
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getApplicationContext(), "Please check your credentials", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+        } else {
+            return;
+        }
     }
 }

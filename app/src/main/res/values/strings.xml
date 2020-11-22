@@ -18,6 +18,8 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="signout">Sign out</string>
+    <string name="user">User</string>
     <string name="register">Register</string>
     <string-array name="test_country_array">
         <item>Test</item>
