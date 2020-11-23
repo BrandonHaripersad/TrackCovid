@@ -26,4 +26,9 @@ public class Location {
         this.latitude = latitude;
         this.user_id = user_id;
     }
+
+    public Location(){
+        // Default constructor required for calls to DataSnapshot.getValue(User.class)
+    }
+
 }
