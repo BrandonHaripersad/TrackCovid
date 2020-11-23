@@ -13,17 +13,26 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.trackcovid.common.User;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -88,7 +97,7 @@ public class LocationMenuActivity extends AppCompatActivity {
 
         locationTask.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
-            public void onSuccess(Location location) {
+            public void onSuccess(final Location location) {
                 if (location != null){
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
@@ -104,10 +113,29 @@ public class LocationMenuActivity extends AppCompatActivity {
                         String country = addresses.get(0).getCountryName();
                         String adminArea = addresses.get(0).getAdminArea();
                         //May have province or state
-                        FirebaseUser user = mAuth.getCurrentUser();
+                        final FirebaseUser user = mAuth.getCurrentUser();
+                        final String user_id = user.getUid();
+
                         if (user != null) {
-                            com.example.trackcovid.common.Location loc = new com.example.trackcovid.common.Location(country, adminArea, longitude, latitude, user.getUid());
+                            final com.example.trackcovid.common.Location loc = new com.example.trackcovid.common.Location(country, adminArea, longitude, latitude, user.getUid());
                             MainActivity.db.locationDao().insert(loc);
+
+                            //check if child exists
+                            final DatabaseReference childRef = FirebaseDatabase.getInstance().getReference("locations/" + user_id);
+
+                            childRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    //If the child node doesn't exist, create it
+                                    childRef.setValue(loc);
+                                    Toast.makeText(getApplicationContext(), "Updating location..", Toast.LENGTH_LONG).show();
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
                         }
                         //String city = addresses.get(0).getLocality();
                         //spEditor.putString("country", country);

@@ -161,7 +161,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getApplicationContext(), "User ID: " + mAuth.getCurrentUser().getUid().toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "User ID: " + mAuth.getCurrentUser().getUid(), Toast.LENGTH_LONG).show();
 
                         passwordField.setText("");
 
