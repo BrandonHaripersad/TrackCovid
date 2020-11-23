@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     RequestQueue requestQueue;
     //Dictionary with date as the key, and a CaseTuple value with daily cases, deaths, recoveries
     Map<String, CaseTuple> CaseDictionary = new HashMap<>();
-    TextView dailyCasesCounter, changesInCasesCounter, locationTextView, dateTextView;
+    TextView dailyCasesCounter, changesInCasesCounter, locationTextView, dateTextView, userLoggedIn;
     final Handler handler = new Handler();
     private FirebaseAuth mAuth;
 
@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
         changesInCasesCounter = findViewById(R.id.counter_changes_since_yesterday);
         locationTextView = findViewById(R.id.location_textview);
         dateTextView = findViewById(R.id.date_textview);
-        reloadLocationTextview();
+        userLoggedIn = findViewById(R.id.user_currently_logged_in);
+        reloadTextviews();
 
         //Change Location Button
         final Button changeLocationButton = findViewById(R.id.change_location_button);
@@ -196,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        reloadLocationTextview();
+        reloadTextviews();
         reloadDate();
         requestData();
     }
@@ -250,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
         changesInCasesCounter.setText(changesCounterValue);
     }
 
-    private void reloadLocationTextview() {
+    private void reloadTextviews() {
         FirebaseUser user = mAuth.getCurrentUser();
         String country = null;
         String adminArea = null;
@@ -258,6 +259,7 @@ public class MainActivity extends AppCompatActivity {
         if (user != null) {
             country = db.locationDao().getCountryName(user.getUid());
             adminArea = db.locationDao().getAdminArea(user.getUid());
+            userLoggedIn.setText("User ID: \n" + user.getUid());
         }
 
         if (country == null || adminArea == null) {
