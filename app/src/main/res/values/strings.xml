@@ -23,13 +23,10 @@
     <string name="register">Register</string>
     <string name="use_gps_help">TIP: If you are unable to get a GPS reading, please try disabling WiFi, enabling Mobile Data, and make sure Location Services is enabled. </string>
     <string-array name="test_country_array">
-        <item>Test</item>
         <item>Canada</item>
-        <item>United States</item>
-        <item>India</item>
+        <item>More Coming Soon..</item>
     </string-array>
     <string-array name="test_province_array">
-        <item>Test</item>
         <item>Ontario</item>
         <item>Vancouver</item>
         <item>Nova Scotia</item>

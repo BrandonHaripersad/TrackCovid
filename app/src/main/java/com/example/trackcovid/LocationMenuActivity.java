@@ -106,7 +106,7 @@ public class LocationMenuActivity extends AppCompatActivity {
                     //spEditor.putLong("longitude", Double.doubleToRawLongBits(longitude));
                     //spEditor.commit();
 
-                    Toast.makeText(getApplicationContext(), "Latitude: " + latitude + ", and " + "Longitude: " + longitude, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "Latitude: " + latitude + ", and " + "Longitude: " + longitude, Toast.LENGTH_SHORT).show();
 
                     try {
                         List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
