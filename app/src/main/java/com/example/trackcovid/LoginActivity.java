@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity{
 
     private Button loginButton;
     private Button registerButton;
